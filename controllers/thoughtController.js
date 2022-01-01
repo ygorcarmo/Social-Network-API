@@ -42,10 +42,15 @@ module.exports = {
     // Delete a thought
     deleteThought(req, res){
         Thought.findOneAndDelete({ _id: req.params.thoughtId})
-            .then((thought) =>
-            !thought
-                ? res.status(404).json({ message: 'No thought found with that ID :('})
-                : Thought.deleteMany({ _id: { $in: thought.reactions}})                
+            .then((thought) =>{
+                if(!thought){
+                    res.status(404).json({ message: 'No thought found with that ID :('})
+                    return;
+                }else{
+                    User.findOneAndUpdate({username: thought.username}, { $pull: { thoughts: thought._id}},
+                        { runValidators: true, new: true }).then((user) => console.log(user))             
+                }                
+            }
             )
             .then((reactions) =>
             !reactions 
