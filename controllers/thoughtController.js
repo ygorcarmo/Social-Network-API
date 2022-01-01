@@ -48,14 +48,10 @@ module.exports = {
                     return;
                 }else{
                     User.findOneAndUpdate({username: thought.username}, { $pull: { thoughts: thought._id}},
-                        { runValidators: true, new: true }).then((user) => console.log(user))             
+                        { runValidators: true, new: true }).then((user) => {console.log(user); res.json({message: 'Thought deleted!'})})             
                 }                
             }
             )
-            .then((reactions) =>
-            !reactions 
-            ? res.status(400).json({message: 'Thought deleted but no reactions found'}) 
-            : res.json({message: 'Thought and Reactions deleted!'}))
             .catch((err) => {
                 console.log(err);
                 res.status(500).json(err)});
